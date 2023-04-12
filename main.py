@@ -1,42 +1,20 @@
-# print('this is a test')
-# inp = input("what is your name? ")
-# print(inp)
-
 # do a python -m PyInstaller --onefile --console main.py in the console when you're done
 
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
 from reportlab.lib.pagesizes import A4
 import os
+import time
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QLineEdit, QPushButton, QVBoxLayout, QWidget
 
-# identifies the w and h of the A4 document
-width,height=A4
 
-def make_cover_letter():
-    # ask for the name of hiring manager
-    manager = input("Hiring Manager (leave blank if unknown): ").title()
-    if manager.lower() == 'q':
-        return
-    elif manager == '':
-        manager = "Hiring Manager"
-
-    # ask for the role title
-    role= input("Role: ")
-    while role == '':
-        role = input("Invalid. Role: ")
-    if role.lower() == 'q':
-        return
-
-    # ask for the company.
-    company = input("Company: ")
-    while company == '':
-        company = input("Invalid. Company: ")
-    if company.lower() == 'q':
-        return
-
+def make_cover_letter(manager, role, company):
     # make a new canvas to draw on at the specified relative location, and with the A4 size.
+    width,height=A4
     c = canvas.Canvas("./Cover Letters/Cover Letter.pdf", pagesize=A4)
-
+    
+    time.sleep(5)
     p1=Paragraph(f"""Dear {manager}, <br/><br/>
 
     I’m happy to see that the position of {role} is available at {company}! As a full-stack developer with experience in Java and Python, I am excited to put my skills to use maintaining and improving the user experience you have perfected. <br/><br/>
@@ -55,15 +33,51 @@ def make_cover_letter():
 
     c.save()
 
-os.system('cls')
-print("=======================================================")
-print("\n********** WELCOME TO THE COVER LETTER MAKER **********\n")
-print("=======================================================")
-doQuit = input("Enter (q) to quit at any time. Enter (any) key to continue: ").lower()
-while doQuit != 'q':
-    make_cover_letter()
-    print("==========\nThanks for using the Cover Letter Maker.")
-    doQuit = input("Enter (q) to quit at any time. Enter (any) key to continue: ").lower()
-    if doQuit == 'q':
-        break
-    os.system('cls')
+
+
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+
+        # Create the widgets
+        self.manager_label = QLabel("Hiring Manager (leave blank if unknown):")
+        self.manager_input = QLineEdit()
+        self.role_label = QLabel("Role:")
+        self.role_input = QLineEdit()
+        self.company_label = QLabel("Company:")
+        self.company_input = QLineEdit()
+        self.submit_button = QPushButton("Submit")
+        self.submit_button.clicked.connect(self.submit_info)
+        self.submission_summary = QLabel(self)
+
+        # Set the layout
+        layout = QVBoxLayout()
+        layout.setContentsMargins(100,100,100,100)
+        layout.addWidget(self.manager_label)
+        layout.addWidget(self.manager_input)
+        layout.addWidget(self.role_label)
+        layout.addWidget(self.role_input)
+        layout.addWidget(self.company_label)
+        layout.addWidget(self.company_input)
+        layout.addWidget(self.submit_button)
+        layout.addWidget(self.submission_summary)
+
+        # Set the central widget
+        central_widget = QWidget()
+        central_widget.setLayout(layout)
+        self.setCentralWidget(central_widget)
+
+    def submit_info(self):
+        manager = self.manager_input.text().title()
+        role = self.role_input.text()
+        company = self.company_input.text()
+        print(f"Manager: {manager}\nRole: {role}\nCompany: {company}")
+        self.submission_summary.setText(f"SUBMITTED\nManager: {manager}\nRole: {role}\nCompany: {company}")
+        make_cover_letter(manager, role, company)
+
+
+if __name__ == "__main__":
+    app = QApplication(sys.argv)
+    main_window = MainWindow()
+    main_window.show()
+    sys.exit(app.exec_())
