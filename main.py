@@ -15,7 +15,6 @@ def make_cover_letter(manager, role, company):
     c = canvas.Canvas("./Cover Letters/Cover Letter.pdf", pagesize=A4)
     if manager == '':
         manager = "Hiring Manager"
-    time.sleep(5)
     p1=Paragraph(f"""Dear {manager}, <br/><br/>
 
     I’m happy to see that the position of {role} is available at {company}! As a full-stack developer with experience in Java and Python, I am excited to put my skills to use maintaining and improving the user experience you have perfected. <br/><br/>
