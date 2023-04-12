@@ -1,4 +1,4 @@
-# do a python -m PyInstaller --onefile --console main.py in the console when you're done
+# do a python -m PyInstaller --onefile --windowed --icon=birb.ico --clean main.py in the console when you're done
 
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph
@@ -13,7 +13,8 @@ def make_cover_letter(manager, role, company):
     # make a new canvas to draw on at the specified relative location, and with the A4 size.
     width,height=A4
     c = canvas.Canvas("./Cover Letters/Cover Letter.pdf", pagesize=A4)
-    
+    if manager == '':
+        manager = "Hiring Manager"
     time.sleep(5)
     p1=Paragraph(f"""Dear {manager}, <br/><br/>
 
